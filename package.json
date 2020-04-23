@@ -1,0 +1,35 @@
+{
+  "name": "pubsocket",
+  "version": "1.0.0",
+  "description": "Javascript implementation of the Publish/Subscribe pattern using socket.io.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/otontech/pubsocket.git"
+  },
+  "keywords": [
+    "pubsub",
+    "pattern",
+    "real-time",
+    "message",
+    "publish",
+    "subscribe",
+    "socket.io"
+  ],
+  "author": "Antônio Vinicius",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/otontech/pubsocket/issues"
+  },
+  "homepage": "https://github.com/otontech/pubsocket#readme",
+  "dependencies": {
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0"
+  },
+  "devDependencies": {
+    "git-cz": "^4.3.1"
+  }
+}
