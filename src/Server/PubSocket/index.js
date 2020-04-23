@@ -58,7 +58,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var socket_io_1 = __importDefault(require("socket.io"));
 var url_1 = __importDefault(require("url"));
-var Channel_1 = __importDefault(require("../../Channel"));
+var Channel_1 = __importDefault(require("../Channel"));
 /** The entry point for PubSocket Server Application */
 var PubSocketServer = /** @class */ (function () {
     /**

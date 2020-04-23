@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var socket_io_client_1 = __importDefault(require("socket.io-client"));
-var config_1 = require("../config");
+var config_1 = require("../Server/PubSocket/config");
 /** PubSocket Client Application */
 var PubSocketClient = /** @class */ (function () {
     /**
@@ -237,4 +237,5 @@ var PubSocketClient = /** @class */ (function () {
     };
     return PubSocketClient;
 }());
+module.exports = PubSocketClient;
 exports.default = PubSocketClient;

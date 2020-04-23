@@ -1,9 +1,8 @@
 {
   "name": "pubsocket",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Javascript implementation of the Publish/Subscribe pattern using socket.io.",
-  "main": "src/index.js",
-  "type": "module",
+  "main": "index.js",
   "scripts": {
     "commit": "git cz"
   },

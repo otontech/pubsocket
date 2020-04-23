@@ -19,10 +19,10 @@ yarn add pubsocket
 ### Server
 
 ```js
-import PubSocket from  'pubsocket';
+const {PubSocket} = require('pubsocket');
 
 // Create PubSocket server instance
-const pubsocket =  PubSocket();
+const pubsocket = PubSocket();
 
 // Create a channel for this pubsocket
 const channel = pubsocket.create_channel('ROOM');
@@ -47,10 +47,10 @@ setTimeout(() => {
 ### Client
 
 ```js
-import {PSClient} from  'pubsocket';
+const {PubSocketClient} = require('pubsocket');
 
 // Create PubSocket client instance
-const psclient =  PSClient();
+const psclient = PubSocketClient();
 
 // Connect the client
 psclient.connect('http://localhost:3000', 'SALA1').then(() => {
