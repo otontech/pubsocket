@@ -63,7 +63,7 @@ psClient.connect('http://localhost:3000', 'ROOM').then(() => {
   setTimeout(() => {
     // Disconnect the client
     psClient.disconnect();
-	}, 10000);
+  }, 10000);
 });
 ```
 
