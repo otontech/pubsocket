@@ -123,7 +123,7 @@ var PubSocketServer = /** @class */ (function () {
         this.io.sockets.on('connection', function (socket) {
             var ns = url_1.default.parse(socket.handshake.url, true).query.ns;
             _this.io.of("/CHANNEL_" + ns).on('connection', function (socket) {
-                if (!_this.getChannelsNames().includes(ns.toString())) {
+                if (!_this.getChannelsNames().includes((ns === null || ns === void 0 ? void 0 : ns.toString()) || '')) {
                     socket.emit('connection_refused', 'This channel does not exits');
                     socket.disconnect();
                 }

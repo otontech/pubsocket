@@ -14,18 +14,6 @@ npm install pubsocket
 yarn add pubsocket
 ```
 
-## Tests
-
-*npm*
-```
-npm run test
-```
-
-*yarn*
-```
-yarn test
-```
-
 ## Example Usage
 
 ### Server

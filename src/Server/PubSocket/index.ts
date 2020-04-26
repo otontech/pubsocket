@@ -47,7 +47,7 @@ class PubSocketServer {
 			const { ns } = url.parse(socket.handshake.url, true).query;
 
 			this.io.of(`/CHANNEL_${ns}`).on('connection', (socket) => {
-				if (!this.getChannelsNames().includes(ns.toString())) {
+				if (!this.getChannelsNames().includes(ns?.toString() || '')) {
 					socket.emit('connection_refused', 'This channel does not exits');
 					socket.disconnect();
 				}
