@@ -14,6 +14,18 @@ npm install pubsocket
 yarn add pubsocket
 ```
 
+## Tests
+
+*npm*
+```
+npm run test
+```
+
+*yarn*
+```
+yarn test
+```
+
 ## Example Usage
 
 ### Server
@@ -22,13 +34,13 @@ yarn add pubsocket
 const {PubSocket} = require('pubsocket');
 
 // Create PubSocket server instance
-const pubsocket = PubSocket();
+const pubSocket = PubSocket();
 
 // Create a channel for this pubsocket
-const channel = pubsocket.create_channel('ROOM');
+const channel = pubSocket.createChannel('ROOM');
 
 // Add Listener to receive messages
-channel.add_listener((data) => {console.log(data)});
+channel.addListener((data) => {console.log(data)});
 
 // Publish a message for all connected peers
 channel.publish("Server Message: Hi.");
@@ -38,7 +50,7 @@ setTimeout(() => {
 	channel.disconnect();
 
 	// Close PubSocketServer
-	pubsocket.close();
+	pubSocket.close();
 }, 10000);
 ```
 
@@ -50,24 +62,24 @@ setTimeout(() => {
 const {PubSocketClient} = require('pubsocket');
 
 // Create PubSocket client instance
-const psclient = PubSocketClient();
+const psClient = PubSocketClient();
 
 // Connect the client
-psclient.connect('http://localhost:3000', 'SALA1').then(() => {
+psClient.connect('http://localhost:3000', 'ROOM').then(() => {
 	// Add Listener to receive messages
-	psclient.add_listener((data) => {console.log(data)});
+	psClient.addListener((data) => {console.log(data)});
 	
 	// Publish a message for channel connected peers
-	psclient.publish('Client Message: Hi');
+	psClient.publish('Client Message: Hi');
 
 	setTimeout(() => {
 		// Disconnect the client
-		psclient.disconnect();
+		psClient.disconnect();
 	}, 10000);
 });
 ```
 
-*The client need to connect to a server, if you not define the server_url property the Client admit http://localhost:3000/ by default.*
+*The client need to connect to a server, if you not define the serverUrl property the Client admit http://localhost:3000/ by default.*
 
 *The Channel Name is required.*
 

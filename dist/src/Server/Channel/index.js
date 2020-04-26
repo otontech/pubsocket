@@ -81,13 +81,13 @@ var Channel = /** @class */ (function () {
          * @todo Implements multi events channels
          * @return {Array<Function>} - All Listeners
          */
-        this.add_listener = function (fn) {
-            _this._clients.forEach(function (_a) {
+        this.addListener = function (fn) {
+            _this.clients.forEach(function (_a) {
                 var socket = _a.socket;
                 socket.on(config_1.EVENT, fn);
             });
-            _this._listeners.push(fn);
-            return _this._listeners;
+            _this.listeners.push(fn);
+            return _this.listeners;
         };
         /**
          * Remove channel event listener.
@@ -96,19 +96,19 @@ var Channel = /** @class */ (function () {
          * @todo Implements multi events channels
          * @return {Array<Function>} - All Listeners
          */
-        this.remove_listener = function (fn) {
-            _this._clients.forEach(function (_a) {
+        this.removeListener = function (fn) {
+            _this.clients.forEach(function (_a) {
                 var socket = _a.socket;
                 socket.off(config_1.EVENT, fn);
             });
-            _this._listeners = _this._listeners.filter(function (v) { return v !== fn; });
-            return _this._listeners;
+            _this.listeners = _this.listeners.filter(function (listener) { return listener !== fn; });
+            return _this.listeners;
         };
-        this._clients = new Map();
-        this._listeners = new Array();
-        this._name = name;
-        this._socket = socket.of("/CHANNEL_" + name);
-        this.register_events.apply(this, middlewares);
+        this.clients = new Map();
+        this.listeners = [];
+        this.name = name;
+        this.socket = socket.of("/CHANNEL_" + name);
+        this.registerEvents.apply(this, middlewares);
     }
     /**
      * Register connection event.
@@ -119,21 +119,21 @@ var Channel = /** @class */ (function () {
      * @access private
      * @param {Array<Function>} middlewares - Connection Middlewares
      */
-    Channel.prototype.register_events = function () {
+    Channel.prototype.registerEvents = function () {
         var _this = this;
         var middlewares = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             middlewares[_i] = arguments[_i];
         }
-        this._socket.on('connection', function (socket) {
-            var _a = _this.manage_middlewares.apply(_this, __spreadArrays([{ id: socket.id }], middlewares)), rejected = _a.rejected, data = _a.data;
+        this.socket.on('connection', function (socket) {
+            var _a = _this.manageMiddlewares.apply(_this, __spreadArrays([{ id: socket.id }], middlewares)), rejected = _a.rejected, data = _a.data;
             if (rejected) {
                 socket.emit('connection_refused', data.reason);
                 socket.disconnect();
             }
             else {
-                _this._clients.set(socket.id, { data: data, socket: socket });
-                _this._listeners.forEach(function (l) { socket.on(config_1.EVENT, l); });
+                _this.clients.set(socket.id, { data: data, socket: socket });
+                _this.listeners.forEach(function (listener) { socket.on(config_1.EVENT, listener); });
                 socket.on(config_1.EVENT, function (data) { _this.publish(data); });
                 socket.emit('connected', data);
             }
@@ -145,13 +145,13 @@ var Channel = /** @class */ (function () {
      * @param {any} initialData - Initial Data for the middleware
      * @param {Array<Function>} middlewares - Connection Middlewares
      */
-    Channel.prototype.manage_middlewares = function (initialData) {
+    Channel.prototype.manageMiddlewares = function (initialData) {
         var middlewares = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             middlewares[_i - 1] = arguments[_i];
         }
         var middlewareManager = new MiddlewareManager_1.default();
-        this.register_middlewares.apply(this, __spreadArrays([middlewareManager], middlewares));
+        this.registerMiddlewares.apply(this, __spreadArrays([middlewareManager], middlewares));
         return middlewareManager.process(initialData);
     };
     /**
@@ -162,7 +162,7 @@ var Channel = /** @class */ (function () {
      * @access private
      * @param {Array<Function>} middlewares - Connection Middlewares
      */
-    Channel.prototype.register_middlewares = function (middlewareManager) {
+    Channel.prototype.registerMiddlewares = function (middlewareManager) {
         var middlewares = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             middlewares[_i - 1] = arguments[_i];
@@ -174,57 +174,57 @@ var Channel = /** @class */ (function () {
      * @access public
      * @return {String} - Channel's name
      */
-    Channel.prototype.get_name = function () {
-        return this._name;
+    Channel.prototype.getName = function () {
+        return this.name;
     };
     /**
      * Set all clients to another channel
      * - Move all clients if client id is not defined
-     * @param {string} channel_name - The new channel name
-     * @param {string} client_id - Client to move
+     * @param {string} channelName - The new channel name
+     * @param {string} clientId - Client to move
      */
-    Channel.prototype.move_to_channel = function (channel_name, client_id) {
-        if (client_id) {
-            var socket = (this._clients.get(client_id) || {}).socket;
+    Channel.prototype.moveToChannel = function (channelName, clientId) {
+        if (clientId) {
+            var socket = (this.clients.get(clientId) || {}).socket;
             if (socket) {
-                socket.emit('set_channel', channel_name);
+                socket.emit('set_channel', channelName);
                 socket.disconnect();
-                this._clients.delete(client_id);
+                this.clients.delete(clientId);
             }
             else {
                 throw new Error("The client id is incorrect.");
             }
         }
         else {
-            this._socket.emit('set_channel', channel_name);
+            this.socket.emit('set_channel', channelName);
         }
     };
     /**
      * Disconnect client by id.
      * - For disconnect all clients don't pass the client id
      * @access public
-     * @param {String} client_id - The client id
+     * @param {String} clientId - The client id
      * @returns {Map<string, ClientData>} - Clients Map
      */
-    Channel.prototype.disconnect = function (client_id) {
-        if (client_id) {
-            var socket = (this._clients.get(client_id) || {}).socket;
+    Channel.prototype.disconnect = function (clientId) {
+        if (clientId) {
+            var socket = (this.clients.get(clientId) || {}).socket;
             if (socket) {
                 socket.disconnect();
-                this._clients.delete(client_id);
+                this.clients.delete(clientId);
             }
             else {
                 throw new Error("The client id is incorrect.");
             }
         }
         else {
-            this._clients.forEach(function (_a) {
+            this.clients.forEach(function (_a) {
                 var socket = _a.socket;
                 return socket.disconnect();
             });
-            this._clients = new Map();
+            this.clients = new Map();
         }
-        return this._clients;
+        return this.clients;
     };
     /**
      * Publish message.
@@ -233,7 +233,7 @@ var Channel = /** @class */ (function () {
      * @param {any} data - Data to broadcast
      */
     Channel.prototype.publish = function (data) {
-        return this._socket.emit(config_1.EVENT, data);
+        return this.socket.emit(config_1.EVENT, data);
     };
     /**
      * Close channel
@@ -242,14 +242,18 @@ var Channel = /** @class */ (function () {
     Channel.prototype.close = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                this._clients.forEach(function (_a) {
-                    var socket = _a.socket;
-                    socket.disconnect();
-                });
-                this._clients = new Map();
-                this._listeners = new Array();
-                this._socket.removeAllListeners();
-                return [2 /*return*/, this._socket.server.close()];
+                switch (_a.label) {
+                    case 0:
+                        this.clients.forEach(function (_a) {
+                            var socket = _a.socket;
+                            socket.disconnect();
+                        });
+                        this.clients = new Map();
+                        this.listeners = [];
+                        this.socket.removeAllListeners();
+                        return [4 /*yield*/, this.socket.server.close()];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
             });
         });
     };

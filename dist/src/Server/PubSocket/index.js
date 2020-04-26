@@ -74,24 +74,25 @@ var PubSocketServer = /** @class */ (function () {
          * Get socket
          * @return {SocketIO.Server} - Socket instance
          */
-        this.get_socket = function () {
-            return _this._io;
+        this.getSocket = function () {
+            return _this.io;
         };
         /**
          * Create a new Channel instance.
          * - The name must be unique
          * @access public
-         * @param {String} channel_name - Name for the channel
+         * @param {String} channelName - Name for the channel
+         * @param {Array<Function>} middlewares
          * @return {Array<Channels> | null} - Created Channel
          */
-        this.create_channel = function (channel_name) {
+        this.createChannel = function (channelName) {
             var middlewares = [];
             for (var _i = 1; _i < arguments.length; _i++) {
                 middlewares[_i - 1] = arguments[_i];
             }
-            var channel = new (Channel_1.default.bind.apply(Channel_1.default, __spreadArrays([void 0, channel_name, _this.get_socket()], middlewares)))();
+            var channel = new (Channel_1.default.bind.apply(Channel_1.default, __spreadArrays([void 0, channelName, _this.getSocket()], middlewares)))();
             try {
-                _this.add_channel(channel);
+                _this.addChannel(channel);
                 return channel;
             }
             catch (e) {
@@ -103,10 +104,10 @@ var PubSocketServer = /** @class */ (function () {
          * @access public
          * @param {Channel} channel - The channel to be verified
          */
-        this.is_valid_channel = function (channel) {
-            if (_this.get_channels_names().includes(channel.get_name()))
+        this.isValidChannel = function (channel) {
+            if (_this.getChannelsNames().includes(channel.getName()))
                 throw new Error('Already exist a channel with this name.');
-            else if (_this._channels.includes(channel))
+            else if (_this.channels.includes(channel))
                 throw new Error('This channel already exists.');
         };
         /**
@@ -114,38 +115,38 @@ var PubSocketServer = /** @class */ (function () {
          * @access public
          * @return {Array<String>} - All channels names
          */
-        this.get_channels_names = function () {
-            return _this._channels.map(function (v) { return v.get_name(); });
+        this.getChannelsNames = function () {
+            return _this.channels.map(function (channel) { return channel.getName(); });
         };
-        this._channels = [];
-        this._io = socket_io_1.default(server);
-        this._io.sockets.on('connection', function (socket) {
+        this.channels = [];
+        this.io = socket_io_1.default(server);
+        this.io.sockets.on('connection', function (socket) {
             var ns = url_1.default.parse(socket.handshake.url, true).query.ns;
-            _this._io.of("/CHANNEL_" + ns).on('connection', function (socket) {
-                if (!_this.get_channels_names().includes(ns.toString())) {
+            _this.io.of("/CHANNEL_" + ns).on('connection', function (socket) {
+                if (!_this.getChannelsNames().includes(ns.toString())) {
                     socket.emit('connection_refused', 'This channel does not exits');
                     socket.disconnect();
                 }
             });
         });
         if (!server)
-            this._io.listen(port || 3000);
+            this.io.listen(port || 3000);
     }
     /**
      * Get channels list
      * @return {Array<Channel>} - All channels list
      */
-    PubSocketServer.prototype.get_channels = function () {
-        return this._channels;
+    PubSocketServer.prototype.getChannels = function () {
+        return this.channels;
     };
     /**
      * Get channel by name
      * @access public
-     * @param {String} channel_name - The channel name
+     * @param {String} channelName - The channel name
      * @return {Channel | null} - Channel instance
      */
-    PubSocketServer.prototype.get_channel = function (channel_name) {
-        var channels = this._channels.filter(function (channel) { return channel.get_name() === channel_name; });
+    PubSocketServer.prototype.getChannel = function (channelName) {
+        var channels = this.channels.filter(function (channel) { return channel.getName() === channelName; });
         if (channels.length <= 0)
             return null;
         else
@@ -156,10 +157,10 @@ var PubSocketServer = /** @class */ (function () {
      * @access public
      * @return {boolean} - It's clear
      */
-    PubSocketServer.prototype.clear_channels = function () {
-        this._channels.forEach(function (v) { return v.close(); });
-        this._channels = new Array();
-        return this._channels.length === 0;
+    PubSocketServer.prototype.clearChannels = function () {
+        this.channels.forEach(function (v) { return v.close(); });
+        this.channels = [];
+        return this.channels.length === 0;
     };
     /**
      * Add new channel in channels list.
@@ -169,12 +170,12 @@ var PubSocketServer = /** @class */ (function () {
      * @access public
      * @return {Array<Channels> | null} - All Channel's list
      */
-    PubSocketServer.prototype.add_channel = function (channel) {
+    PubSocketServer.prototype.addChannel = function (channel) {
         try {
-            this.is_valid_channel(channel);
-            this._channels.push(channel);
-            console.log("PubSocket: The channel (" + channel.get_name() + ") is added successfully.");
-            return this._channels;
+            this.isValidChannel(channel);
+            this.channels.push(channel);
+            console.log("PubSocket: The channel (" + channel.getName() + ") is added successfully.");
+            return this.channels;
         }
         catch (e) {
             return null;
@@ -187,7 +188,7 @@ var PubSocketServer = /** @class */ (function () {
     PubSocketServer.prototype.close = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this._io.close()];
+                return [2 /*return*/, this.io.close()];
             });
         });
     };

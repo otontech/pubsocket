@@ -1,35 +1,62 @@
 {
   "name": "pubsocket",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Javascript implementation of the Publish/Subscribe pattern using socket.io.",
-  "main": "index.js",
-  "scripts": {
-    "commit": "git cz"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/otontech/pubsocket.git"
-  },
-  "keywords": [
-    "pubsub",
-    "pattern",
-    "real-time",
-    "message",
-    "publish",
-    "subscribe",
-    "socket.io"
-  ],
-  "author": "Antônio Vinicius",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/otontech/pubsocket/issues"
-  },
-  "homepage": "https://github.com/otontech/pubsocket#readme",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "dependencies": {
+    "@types/jest": "^25.2.1",
+    "@types/socket.io": "^2.1.4",
+    "@types/socket.io-client": "^1.4.32",
+    "jest": "^25.3.0",
+    "nodemon": "^2.0.3",
     "socket.io": "^2.3.0",
-    "socket.io-client": "^2.3.0"
+    "socket.io-client": "^2.3.0",
+    "ts-jest": "^25.3.1",
+    "ts-node": "^8.8.2",
+    "typescript": "^3.8.3"
   },
   "devDependencies": {
     "git-cz": "^4.3.1"
+  },
+  "scripts": {
+    "dev": "nodemon src/index.ts",
+    "dev:debug": "nodemon --inspect src/index.ts",
+    "test": "jest --no-cache --runInBand",
+    "test_app": "ts-node test/test_app.ts",
+    "build": "tsc",
+    "commit": "git cz"
+  },
+  "keywords": [
+    "pubsub",
+    "publish",
+    "subscribe",
+    "pub/sub",
+    "event",
+    "emitter",
+    "chat",
+    "message",
+    "socket"
+  ],
+  "author": "Antônio Vinicius",
+  "license": "ISC",
+  "jest": {
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "testRegex": "\\.test\\.ts",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "git-cz"
+    }
   }
 }

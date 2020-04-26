@@ -4,6 +4,9 @@
  *
  * Use this class to support middleware pattern.
  *
+ * This code is inspired in this pattern.
+ * <https://github.com/waldemarnt/node-design-patterns/tree/master/examples/middleware>
+ *
  * @link   <http://www.otontech.com.br>
  * @file   This files defines the DataPipeline class.
  * @author Antônio Vinicius.
@@ -24,11 +27,11 @@ var DataPipeline = /** @class */ (function () {
         for (var _i = 1; _i < arguments.length; _i++) {
             middlewares[_i - 1] = arguments[_i];
         }
-        this._middlewares = middlewares;
-        this._finished = false;
+        this.middlewares = middlewares;
+        this.finished = false;
         this.rejected = false;
         data.end = function () {
-            _this._finished = true;
+            _this.finished = true;
         };
         this.data = data;
     }
@@ -39,15 +42,15 @@ var DataPipeline = /** @class */ (function () {
     DataPipeline.prototype.dispatch = function () {
         var _this = this;
         var iterator = 0;
-        if (iterator < this._middlewares.length) {
-            var firstMiddleware = this._middlewares[iterator];
+        if (iterator < this.middlewares.length) {
+            var firstMiddleware = this.middlewares[iterator];
             /**
              * Function to pass to the next middleware.
              */
             var next_1 = function () {
                 iterator++;
-                if (!_this._finished && iterator < _this._middlewares.length) {
-                    var nextMiddleware = _this._middlewares[iterator];
+                if (!_this.finished && (iterator < _this.middlewares.length)) {
+                    var nextMiddleware = _this.middlewares[iterator];
                     nextMiddleware(_this.data, next_1, reject_1);
                 }
                 else {

@@ -4,6 +4,9 @@
  *
  * Use this class to use middleware pattern.
  *
+ * This code is inspired in this pattern.
+ * <https://github.com/waldemarnt/node-design-patterns/tree/master/examples/middleware>
+ *
  * @link   <http://www.otontech.com.br>
  * @file   This files defines the MiddlewareManager class.
  * @author Antônio Vinicius.
@@ -32,7 +35,7 @@ var MiddlewareManager = /** @class */ (function () {
      * @constructor
      */
     function MiddlewareManager() {
-        this._middlewares = [];
+        this.middlewares = [];
     }
     /**
      * Process all middlewares.
@@ -41,7 +44,7 @@ var MiddlewareManager = /** @class */ (function () {
      * @returns {Object} - Returns if is rejected and the processed data
      */
     MiddlewareManager.prototype.process = function (data) {
-        var dataPipeline = new (DataPipeline_1.default.bind.apply(DataPipeline_1.default, __spreadArrays([void 0, data], this._middlewares)))();
+        var dataPipeline = new (DataPipeline_1.default.bind.apply(DataPipeline_1.default, __spreadArrays([void 0, data], this.middlewares)))();
         dataPipeline.dispatch();
         return { rejected: dataPipeline.rejected, data: dataPipeline.data };
     };
@@ -51,7 +54,7 @@ var MiddlewareManager = /** @class */ (function () {
      * @param {Function} middleware - Middleware function to be added.
      */
     MiddlewareManager.prototype.use = function (middleware) {
-        this._middlewares.push(middleware);
+        this.middlewares.push(middleware);
     };
     return MiddlewareManager;
 }());

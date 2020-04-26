@@ -56,21 +56,18 @@ var PubSocketClient = /** @class */ (function () {
     /**
      * Create a PubSocket Client instance.
      * @constructor
-     * @param {String} server_url - The PubSocket Server url
-     * @param {String} channel_name - Channel to connect
      */
     function PubSocketClient() {
         var _this = this;
         /**
          * Publish a message.
          * @access public
-         * @param {String} event - Event to broadcast
          * @param {any} data - Data to broadcast
          * @returns {boolean} - Published
          */
         this.publish = function (data) {
             var _a;
-            if (!_this.is_connected())
+            if (!_this.isConnected())
                 return false;
             (_a = _this.socket) === null || _a === void 0 ? void 0 : _a.emit(config_1.EVENT, data);
             return true;
@@ -78,32 +75,32 @@ var PubSocketClient = /** @class */ (function () {
         /**
          * Connect the client.
          * @access public
-         * @param {String} server_url - The server url
-         * @param {String} channel_name - The channels name
+         * @param {String} serverUrl - The server url
+         * @param {String} channelName - The channels name
          * @returns {Promise<string>} - Returns connection state as promise
          */
-        this.connect = function (server_url, channel_name) { return __awaiter(_this, void 0, void 0, function () {
+        this.connect = function (serverUrl, channelName) { return __awaiter(_this, void 0, void 0, function () {
             var socket;
             var _this = this;
             return __generator(this, function (_a) {
-                socket = socket_io_client_1.default.connect(server_url + "/CHANNEL_" + channel_name, { forceNew: true, query: "ns=" + channel_name });
+                socket = socket_io_client_1.default.connect(serverUrl + "/CHANNEL_" + channelName, { forceNew: true, query: "ns=" + channelName });
                 return [2 /*return*/, new Promise(function (resolve, reject) {
                         socket.on('disconnect', function () {
-                            reject("Disconnected from: " + channel_name);
+                            reject("Disconnected from: " + channelName);
                         });
                         socket.on('connection_refused', function (reason) {
                             reject("Connection refused, reason: " + reason);
                         });
-                        socket.on('set_channel', function (channel_name) { return __awaiter(_this, void 0, void 0, function () {
+                        socket.on('set_channel', function (channelName) { return __awaiter(_this, void 0, void 0, function () {
                             var success;
                             var _this = this;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
-                                    case 0: return [4 /*yield*/, this.set_channel(channel_name)];
+                                    case 0: return [4 /*yield*/, this.setChannel(channelName)];
                                     case 1:
                                         success = _a.sent();
-                                        this._listeners.forEach(function (v) { var _a; return (_a = _this.socket) === null || _a === void 0 ? void 0 : _a.on(config_1.EVENT, v); });
-                                        this._set_channel_listener(success, channel_name);
+                                        this.listeners.forEach(function (v) { var _a; return (_a = _this.socket) === null || _a === void 0 ? void 0 : _a.on(config_1.EVENT, v); });
+                                        this.setChannelListener(success, channelName);
                                         return [2 /*return*/];
                                 }
                             });
@@ -113,7 +110,7 @@ var PubSocketClient = /** @class */ (function () {
                                 switch (_a.label) {
                                     case 0:
                                         socket.off('connect');
-                                        if (!this.is_connected()) return [3 /*break*/, 2];
+                                        if (!this.isConnected()) return [3 /*break*/, 2];
                                         return [4 /*yield*/, this.disconnect()];
                                     case 1:
                                         _a.sent();
@@ -121,7 +118,7 @@ var PubSocketClient = /** @class */ (function () {
                                     case 2:
                                         this.socket = socket;
                                         this.data = data;
-                                        this.server_url = server_url;
+                                        this.serverUrl = serverUrl;
                                         resolve();
                                         return [2 /*return*/];
                                 }
@@ -130,8 +127,8 @@ var PubSocketClient = /** @class */ (function () {
                     })];
             });
         }); };
-        this._listeners = new Array();
-        this._set_channel_listener = function () { };
+        this.listeners = [];
+        this.setChannelListener = function () { };
     }
     /**
      * Add Listener to the client.
@@ -139,13 +136,13 @@ var PubSocketClient = /** @class */ (function () {
      * @param {Function} fn - Listener function
      * @returns {Array<Function> | boolean} - Listeners list
      */
-    PubSocketClient.prototype.add_listener = function (fn) {
+    PubSocketClient.prototype.addListener = function (fn) {
         var _a;
-        if (!this.is_connected())
+        if (!this.isConnected())
             return false;
-        this._listeners.push(fn);
+        this.listeners.push(fn);
         (_a = this.socket) === null || _a === void 0 ? void 0 : _a.on(config_1.EVENT, fn);
-        return this._listeners;
+        return this.listeners;
     };
     /**
      * Remove Listener to the client
@@ -153,39 +150,39 @@ var PubSocketClient = /** @class */ (function () {
      * @param {Function} fn - Listener function
      * @returns {Array<Function> | null} - Listeners list
      */
-    PubSocketClient.prototype.remove_listener = function (fn) {
+    PubSocketClient.prototype.removeListener = function (fn) {
         var _a;
-        if (!this.is_connected())
+        if (!this.isConnected())
             return null;
-        this._listeners = this._listeners.filter(function (l) { return l !== fn; });
         (_a = this.socket) === null || _a === void 0 ? void 0 : _a.off(config_1.EVENT, fn);
-        return this._listeners;
+        this.listeners = this.listeners.filter(function (l) { return l !== fn; });
+        return this.listeners;
     };
     /**
      * Clear all client event listener.
      * @access public
      * @returns {Array<Function> | null} - Listeners list
      */
-    PubSocketClient.prototype.clear_listeners = function () {
+    PubSocketClient.prototype.clearListeners = function () {
         var _a;
-        if (!this.is_connected())
+        if (!this.isConnected())
             return null;
-        this._listeners = new Array();
         (_a = this.socket) === null || _a === void 0 ? void 0 : _a.off(config_1.EVENT);
-        return this._listeners;
+        this.listeners = [];
+        return this.listeners;
     };
     /**
      * Change the client channel.
      * @access public
-     * @param {String} channel_name - Channel to be connected
+     * @param {String} channelName - Channel to be connected
      * @returns {Promise<boolean>} - Set channel successfully
      */
-    PubSocketClient.prototype.set_channel = function (channel_name) {
+    PubSocketClient.prototype.setChannel = function (channelName) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                if (!this.is_connected())
+                if (!this.isConnected())
                     return [2 /*return*/, false];
-                return [2 /*return*/, this.connect(this.server_url || '', channel_name)
+                return [2 /*return*/, this.connect(this.serverUrl || '', channelName)
                         .then(function () {
                         return true;
                     }).catch(function () {
@@ -199,15 +196,15 @@ var PubSocketClient = /** @class */ (function () {
      * @access public
      * @param {Function} fn - Listener function
      */
-    PubSocketClient.prototype.on_set_channel = function (fn) {
-        this._set_channel_listener = fn;
+    PubSocketClient.prototype.onSetChannel = function (fn) {
+        this.setChannelListener = fn;
     };
     /**
      * Is connected.
      * @access public
      * @returns {boolean} - Client is connected
      */
-    PubSocketClient.prototype.is_connected = function () {
+    PubSocketClient.prototype.isConnected = function () {
         return this.socket ? this.socket.connected : false;
     };
     /**
@@ -221,15 +218,15 @@ var PubSocketClient = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        if (!this.is_connected())
+                        if (!this.isConnected())
                             return [2 /*return*/, false];
-                        this.clear_listeners();
+                        this.clearListeners();
                         return [4 /*yield*/, ((_a = this.socket) === null || _a === void 0 ? void 0 : _a.disconnect())];
                     case 1:
                         _b.sent();
                         this.socket = null;
                         this.data = null;
-                        this.server_url = null;
+                        this.serverUrl = null;
                         return [2 /*return*/, true];
                 }
             });
@@ -237,5 +234,4 @@ var PubSocketClient = /** @class */ (function () {
     };
     return PubSocketClient;
 }());
-module.exports = PubSocketClient;
 exports.default = PubSocketClient;
