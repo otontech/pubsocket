@@ -46,8 +46,8 @@ channel.addListener((data) => {console.log(data)});
 channel.publish("Server Message: Hi.");
 
 setTimeout(() => {
-	// Disconnect the channel
-	channel.disconnect();
+  // Disconnect the channel
+  channel.disconnect();
 
 	// Close PubSocketServer
 	pubSocket.close();

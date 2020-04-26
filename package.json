@@ -1,6 +1,6 @@
 {
   "name": "pubsocket",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Javascript implementation of the Publish/Subscribe pattern using socket.io.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
