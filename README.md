@@ -37,8 +37,8 @@ setTimeout(() => {
   // Disconnect the channel
   channel.disconnect();
 
-	// Close PubSocketServer
-	pubSocket.close();
+  // Close PubSocketServer
+  pubSocket.close();
 }, 10000);
 ```
 
@@ -54,15 +54,15 @@ const psClient = PubSocketClient();
 
 // Connect the client
 psClient.connect('http://localhost:3000', 'ROOM').then(() => {
-	// Add Listener to receive messages
-	psClient.addListener((data) => {console.log(data)});
+  // Add Listener to receive messages
+  psClient.addListener((data) => {console.log(data)});
 	
-	// Publish a message for channel connected peers
-	psClient.publish('Client Message: Hi');
+  // Publish a message for channel connected peers
+  psClient.publish('Client Message: Hi');
 
-	setTimeout(() => {
-		// Disconnect the client
-		psClient.disconnect();
+  setTimeout(() => {
+    // Disconnect the client
+    psClient.disconnect();
 	}, 10000);
 });
 ```
