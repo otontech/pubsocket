@@ -11,7 +11,7 @@
 
 import socket from 'socket.io';
 import url from 'url';
-import { Server } from 'http';
+import { Server, createServer } from 'http';
 
 import Channel from '../Channel';
 
@@ -42,10 +42,10 @@ class PubSocketServer {
 	 */
 	public constructor(server?: Server, port?: number) {
 		this.channels = [];
-		this.io = socket(server);
+		const sv = server || createServer();
+		this.io = socket(sv);
 		this.io.sockets.on('connection', (socket) => {
 			const { ns } = url.parse(socket.handshake.url, true).query;
-
 			this.io.of(`/CHANNEL_${ns}`).on('connection', (socket) => {
 				if (!this.getChannelsNames().includes(ns?.toString() || '')) {
 					socket.emit('connection_refused', 'This channel does not exits');
@@ -53,8 +53,9 @@ class PubSocketServer {
 				}
 			})
 		});
-		if (!server)
-			this.io.listen(port || 3000);
+		if(!server){
+			sv.listen(port || 3000);
+		}
 	}
 
 	/**

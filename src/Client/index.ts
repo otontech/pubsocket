@@ -60,7 +60,7 @@ class PubSocketClient {
 	 */
 	public constructor() {
 		this.listeners = [];
-		this.setChannelListener = () => { };
+		this.setChannelListener = () => {};
 	}
 
 	/**
@@ -137,7 +137,7 @@ class PubSocketClient {
 	 * @returns {Promise<string>} - Returns connection state as promise
 	 */
 	public connect = async (serverUrl: String, channelName: String): Promise<string> => {
-		const socket = io.connect(`${serverUrl}/CHANNEL_${channelName}`, { forceNew: true, query: `ns=${channelName}` });
+		const socket = io(`${serverUrl}/CHANNEL_${channelName}`, { forceNew: true, query: `ns=${channelName}` });
 		return new Promise((resolve, reject) => {
 			socket.on('disconnect', () => {
 				reject(`Disconnected from: ${channelName}`);
@@ -156,7 +156,7 @@ class PubSocketClient {
 				this.socket = socket;
 				this.data = data;
 				this.serverUrl = serverUrl;
-				resolve();
+				resolve(data);
 			});
 		});
 	}

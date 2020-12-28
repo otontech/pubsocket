@@ -11,7 +11,8 @@ describe('PubSocketClient', () => {
 		pubSocket.createChannel('ROOM2');
 
 		client = new PubClient();
-		await client.connect('http://localhost:3000', 'ROOM1');
+		const res = await client.connect('http://localhost:3000', 'ROOM1')
+		.catch(e => console.log(e));
 	})
 
 	beforeEach(() => {
